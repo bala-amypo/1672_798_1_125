@@ -23,7 +23,7 @@ public class Category {
     @ManyToMany(mappedBy = "categories")
     private Set<MenuItem> menuItems;
 
-    // Getters and Setters
+    
     public Long getId() { return id; }
     public String getName() { return name; }
     public String getDescription() { return description; }
