@@ -1,4 +1,4 @@
-package com.example.demo.service.impl;
+package com.example.demo.service;
 
 import com.example.demo.dto.AuthRequest;
 import com.example.demo.dto.RegisterRequest;
