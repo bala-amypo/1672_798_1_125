@@ -30,6 +30,14 @@ public class User {
     }
 
     // Getters and Setters
+    public String getFullName() {
+    return fullName;
+}
+
+public void setFullName(String fullName) {
+    this.fullName = fullName;
+}
+
     public Long getId() { return id; }
     public String getEmail() { return email; }
     public String getPassword() { return password; }
