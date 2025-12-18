@@ -3,9 +3,10 @@ import com.example.demo.service.CategoryService;
 import com.example.demo.entity.Category;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.CategoryRepository;
-
+import org.springframework.stereotype.Service;  
 import java.util.List;
 
+@Service
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
