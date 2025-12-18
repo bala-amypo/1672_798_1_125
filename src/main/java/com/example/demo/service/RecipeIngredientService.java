@@ -2,7 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.entity.RecipeIngredient;
 import java.util.List;
-
+@Service
 public interface RecipeIngredientService {
     RecipeIngredient addIngredientToRecipe(Long menuItemId, Long ingredientId, Double quantity);
     RecipeIngredient updateRecipeIngredient(Long id, Double quantity);

@@ -3,6 +3,7 @@ package com.example.demo.service;
 import com.example.demo.entity.ProfitCalculationRecord;
 import java.util.List;
 
+@Service
 public interface ProfitCalculationService {
     ProfitCalculationRecord calculateProfit(Long menuItemId);
     ProfitCalculationRecord getCalculationById(Long id);
