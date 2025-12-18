@@ -3,10 +3,12 @@ package com.example.demo.service;
 import com.example.demo.entity.*;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.*;
-
+import com.example.demo.service.ProfitCalculationService;
 import java.math.BigDecimal;
+
 import java.util.List;
 
+@Service
 public class ProfitCalculationServiceImpl implements ProfitCalculationService {
 
     private final MenuItemRepository menuItemRepository;

@@ -4,10 +4,11 @@ import com.example.demo.entity.Ingredient;
 import com.example.demo.exception.BadRequestException;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.IngredientRepository;
+import com.example.demo.service.IngredientService;
 
 import java.math.BigDecimal;
 import java.util.List;
-
+@Service
 public class IngredientServiceImpl implements IngredientService {
 
     private final IngredientRepository ingredientRepository;
