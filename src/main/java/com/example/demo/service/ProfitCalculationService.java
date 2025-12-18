@@ -2,6 +2,8 @@ package com.example.demo.service;
 
 import com.example.demo.entity.ProfitCalculationRecord;
 import java.util.List;
+import org.springframework.stereotype.Service;
+
 
 @Service
 public interface ProfitCalculationService {
