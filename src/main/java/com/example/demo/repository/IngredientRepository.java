@@ -1,12 +1,10 @@
-package com.example.demo.repository;
+public interface RecipeIngredientRepository
+        extends JpaRepository<RecipeIngredient, Long> {
 
-import com.example.demo.entity.Ingredient;
-import org.springframework.data.jpa.repository.JpaRepository;
+    List<RecipeIngredient> findByMenuItemId(Long menuItemId);
 
-import java.util.Optional;
+    boolean existsByMenuItemId(Long menuItemId);
 
-public interface IngredientRepository extends JpaRepository<Ingredient, Long> {
-
-    // 🔴 THIS METHOD IS REQUIRED BY TESTS
-    Optional<Ingredient> findByNameIgnoreCase(String name);
+    @Query("SELECT COALESCE(SUM(r.quantityRequired), 0) FROM RecipeIngredient r WHERE r.ingredient.id = :ingredientId")
+    Double getTotalQuantityByIngredientId(Long ingredientId);
 }

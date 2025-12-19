@@ -9,7 +9,8 @@ import java.util.Optional;
 
 public interface MenuItemRepository extends JpaRepository<MenuItem, Long> {
 
-    Optional<MenuItem> findByName(String name);
+    // 🔴 REQUIRED by service + tests
+    Optional<MenuItem> findByNameIgnoreCase(String name);
 
     @Query("SELECT DISTINCT m FROM MenuItem m LEFT JOIN FETCH m.categories WHERE m.active = true")
     List<MenuItem> findAllActiveWithCategories();
