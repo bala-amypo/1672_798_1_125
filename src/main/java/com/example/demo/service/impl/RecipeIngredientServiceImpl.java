@@ -32,23 +32,28 @@ public class RecipeIngredientServiceImpl implements RecipeIngredientService {
         this.menuItemRepository = menuItemRepository;
     }
 
+    // ✅ MUST MATCH INTERFACE EXACTLY
     @Override
-    public RecipeIngredient addIngredientToMenuItem(RecipeIngredient ri) {
+    public RecipeIngredient addIngredientToRecipe(
+            Long menuItemId,
+            Long ingredientId,
+            Double quantity
+    ) {
 
-        if (ri.getQuantityRequired() == null || ri.getQuantityRequired() <= 0) {
+        if (quantity == null || quantity <= 0) {
             throw new BadRequestException("Quantity must be greater than zero");
         }
 
-        Ingredient ingredient = ingredientRepository.findById(
-                ri.getIngredient().getId())
+        Ingredient ingredient = ingredientRepository.findById(ingredientId)
                 .orElseThrow(() -> new ResourceNotFoundException("Ingredient not found"));
 
-        MenuItem menuItem = menuItemRepository.findById(
-                ri.getMenuItem().getId())
+        MenuItem menuItem = menuItemRepository.findById(menuItemId)
                 .orElseThrow(() -> new ResourceNotFoundException("Menu item not found"));
 
+        RecipeIngredient ri = new RecipeIngredient();
         ri.setIngredient(ingredient);
         ri.setMenuItem(menuItem);
+        ri.setQuantityRequired(quantity);
 
         return recipeIngredientRepository.save(ri);
     }
