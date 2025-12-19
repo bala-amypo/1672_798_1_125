@@ -1,10 +1,11 @@
-public interface RecipeIngredientRepository
-        extends JpaRepository<RecipeIngredient, Long> {
+package com.example.demo.repository;
 
-    List<RecipeIngredient> findByMenuItemId(Long menuItemId);
+import com.example.demo.entity.Ingredient;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-    boolean existsByMenuItemId(Long menuItemId);
+import java.util.Optional;
 
-    @Query("SELECT COALESCE(SUM(r.quantityRequired), 0) FROM RecipeIngredient r WHERE r.ingredient.id = :ingredientId")
-    Double getTotalQuantityByIngredientId(Long ingredientId);
+public interface IngredientRepository extends JpaRepository<Ingredient, Long> {
+
+    Optional<Ingredient> findByNameIgnoreCase(String name);
 }

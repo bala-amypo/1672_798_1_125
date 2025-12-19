@@ -6,10 +6,14 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface RecipeIngredientRepository extends JpaRepository<RecipeIngredient, Long> {
+public interface RecipeIngredientRepository
+        extends JpaRepository<RecipeIngredient, Long> {
 
     List<RecipeIngredient> findByMenuItemId(Long menuItemId);
 
-    @Query("SELECT COALESCE(SUM(r.quantityRequired), 0) FROM RecipeIngredient r WHERE r.ingredient.id = :ingredientId")
+    boolean existsByMenuItemId(Long menuItemId);
+
+    @Query("SELECT COALESCE(SUM(r.quantityRequired), 0) " +
+           "FROM RecipeIngredient r WHERE r.ingredient.id = :ingredientId")
     Double getTotalQuantityByIngredientId(Long ingredientId);
 }
