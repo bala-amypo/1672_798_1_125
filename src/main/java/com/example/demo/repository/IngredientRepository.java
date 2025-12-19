@@ -7,5 +7,6 @@ import java.util.Optional;
 
 public interface IngredientRepository extends JpaRepository<Ingredient, Long> {
 
-    Optional<Ingredient> findByName(String name);
+    // 🔴 THIS METHOD IS REQUIRED BY TESTS
+    Optional<Ingredient> findByNameIgnoreCase(String name);
 }
