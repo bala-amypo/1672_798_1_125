@@ -1,69 +1,87 @@
 package com.example.demo.service.impl;
-import org.springframework.stereotype.Service;
 
-import com.example.demo.entity.Ingredient;
+import com.example.demo.entity.MenuItem;
 import com.example.demo.exception.BadRequestException;
 import com.example.demo.exception.ResourceNotFoundException;
-import com.example.demo.repository.IngredientRepository;
-import com.example.demo.service.IngredientService;
+import com.example.demo.repository.CategoryRepository;
+import com.example.demo.repository.MenuItemRepository;
+import com.example.demo.repository.RecipeIngredientRepository;
+import com.example.demo.service.MenuItemService;
 
 import java.math.BigDecimal;
 import java.util.List;
+
+import org.springframework.stereotype.Service;
+
 @Service
-public class IngredientServiceImpl implements IngredientService {
+public class MenuItemServiceImpl implements MenuItemService {
 
-    private final IngredientRepository ingredientRepository;
+    private final MenuItemRepository menuItemRepository;
+    private final RecipeIngredientRepository recipeIngredientRepository;
+    private final CategoryRepository categoryRepository;
 
-    // 🔴 EXACT constructor order
-    public IngredientServiceImpl(IngredientRepository ingredientRepository) {
-        this.ingredientRepository = ingredientRepository;
+    public MenuItemServiceImpl(
+            MenuItemRepository menuItemRepository,
+            RecipeIngredientRepository recipeIngredientRepository,
+            CategoryRepository categoryRepository
+    ) {
+        this.menuItemRepository = menuItemRepository;
+        this.recipeIngredientRepository = recipeIngredientRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     @Override
-public Ingredient createIngredient(Ingredient ingredient) {
+    public MenuItem createMenuItem(MenuItem item) {
 
-    // 1️⃣ Duplicate name check (IMPORTANT FOR TESTS)
-    ingredientRepository.findByNameIgnoreCase(ingredient.getName())
-            .ifPresent(i -> {
-                throw new BadRequestException("Ingredient already exists");
-            });
+        if (item.getSellingPrice() == null ||
+            item.getSellingPrice().compareTo(BigDecimal.ZERO) <= 0) {
+            throw new BadRequestException("Invalid price");
+        }
 
-    // 2️⃣ Cost validation (TEST LOOKS FOR THIS MESSAGE)
-    if (ingredient.getCostPerUnit() == null ||
-        ingredient.getCostPerUnit().compareTo(BigDecimal.ZERO) <= 0) {
+        menuItemRepository.findByNameIgnoreCase(item.getName())
+                .ifPresent(m -> {
+                    throw new BadRequestException("Duplicate menu item");
+                });
 
-        throw new BadRequestException("Cost per unit must be greater than zero");
-    }
-
-    ingredient.setActive(true);
-    return ingredientRepository.save(ingredient);
-}
-
-
-    @Override
-    public Ingredient updateIngredient(Long id, Ingredient ingredient) {
-        Ingredient existing = getIngredientById(id);
-        existing.setName(ingredient.getName());
-        existing.setUnit(ingredient.getUnit());
-        existing.setCostPerUnit(ingredient.getCostPerUnit());
-        return ingredientRepository.save(existing);
+        return menuItemRepository.save(item);
     }
 
     @Override
-    public Ingredient getIngredientById(Long id) {
-        return ingredientRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Ingredient not found"));
+    public MenuItem updateMenuItem(Long id, MenuItem item) {
+
+        MenuItem existing = menuItemRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Menu item not found"));
+
+        if (item.getActive() != null && item.getActive()) {
+            if (!recipeIngredientRepository.existsByMenuItemId(id)) {
+                throw new BadRequestException(
+                        "Menu item cannot be active without recipe ingredients"
+                );
+            }
+        }
+
+        existing.setName(item.getName());
+        existing.setSellingPrice(item.getSellingPrice());
+        existing.setActive(item.getActive());
+
+        return menuItemRepository.save(existing);
     }
 
     @Override
-    public List<Ingredient> getAllIngredients() {
-        return ingredientRepository.findAll();
+    public MenuItem getMenuItemById(Long id) {
+        return menuItemRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Menu item not found"));
     }
 
     @Override
-    public void deactivateIngredient(Long id) {
-        Ingredient ingredient = getIngredientById(id);
-        ingredient.setActive(false);
-        ingredientRepository.save(ingredient);
+    public List<MenuItem> getAllMenuItems() {
+        return menuItemRepository.findAll();
+    }
+
+    @Override
+    public void deactivateMenuItem(Long id) {
+        MenuItem item = getMenuItemById(id);
+        item.setActive(false);
+        menuItemRepository.save(item);
     }
 }
