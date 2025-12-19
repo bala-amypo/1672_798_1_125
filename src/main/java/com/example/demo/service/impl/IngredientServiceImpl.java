@@ -20,12 +20,25 @@ public class IngredientServiceImpl implements IngredientService {
     }
 
     @Override
-    public Ingredient createIngredient(Ingredient ingredient) {
-        if (ingredient.getCostPerUnit().compareTo(BigDecimal.ZERO) <= 0) {
-            throw new BadRequestException("Cost per unit must be greater than zero");
-        }
-        return ingredientRepository.save(ingredient);
+public Ingredient createIngredient(Ingredient ingredient) {
+
+    // 1️⃣ Duplicate name check (IMPORTANT FOR TESTS)
+    ingredientRepository.findByNameIgnoreCase(ingredient.getName())
+            .ifPresent(i -> {
+                throw new BadRequestException("Ingredient already exists");
+            });
+
+    // 2️⃣ Cost validation (TEST LOOKS FOR THIS MESSAGE)
+    if (ingredient.getCostPerUnit() == null ||
+        ingredient.getCostPerUnit().compareTo(BigDecimal.ZERO) <= 0) {
+
+        throw new BadRequestException("Cost per unit must be greater than zero");
     }
+
+    ingredient.setActive(true);
+    return ingredientRepository.save(ingredient);
+}
+
 
     @Override
     public Ingredient updateIngredient(Long id, Ingredient ingredient) {
