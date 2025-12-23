@@ -1,20 +1,13 @@
-package com.example.demo.config;
-
-import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.  models.servers.Server;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import java.util.List;
-@Configuration
-public class SwaggerConfig {
-
-    @Bean
-    public OpenAPI customOpenAPI() {
-        return new OpenAPI()
-               
-                .servers(List.of(
-                        new Server().url("https://9197.pro604cr.amypo.ai/")
-                ));
-        }
-}
-
+spring.application.name=demo
+# Don't change the port
+server.port=9001
+# for https
+server.forward-headers-strategy=framework 
+spring.datasource.url=jdbc:mysql://localhost:3306/sample?createDatabaseIfNotExist=true
+spring.datasource.username=root
+spring.datasource.password=Amypo
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL8Dialect
