@@ -1,7 +1,3 @@
-package com.example.demo.entity;
-
-import jakarta.persistence.*;
-
 @Entity
 @Table(name = "recipe_ingredients")
 public class RecipeIngredient {
