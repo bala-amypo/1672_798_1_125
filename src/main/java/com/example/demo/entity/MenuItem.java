@@ -47,14 +47,63 @@ public class MenuItem {
         updatedAt = new Timestamp(System.currentTimeMillis());
     }
 
-    // Getters and Setters
-    public Long getId() { return id; }
-    public String getName() { return name; }
-    public BigDecimal getSellingPrice() { return sellingPrice; }
-    public Boolean getActive() { return active; }
+    // ===================== GETTERS =====================
 
-    public void setId(Long id) { this.id = id; }
-    public void setName(String name) { this.name = name; }
-    public void setSellingPrice(BigDecimal sellingPrice) { this.sellingPrice = sellingPrice; }
-    public void setActive(Boolean active) { this.active = active; }
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public BigDecimal getSellingPrice() {
+        return sellingPrice;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public Timestamp getCreatedAt() {
+        return createdAt;
+    }
+
+    public Timestamp getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public Set<Category> getCategories() {
+        return categories;
+    }
+
+    // ===================== SETTERS =====================
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setSellingPrice(BigDecimal sellingPrice) {
+        this.sellingPrice = sellingPrice;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
+
+    public void setCategories(Set<Category> categories) {
+        this.categories = categories;
+    }
 }
