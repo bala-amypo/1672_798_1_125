@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
-import com.exampl.demo.servlet.HelloServlet;
+import com.example.demo.servlet.HelloServlet;
 
 @SpringBootApplication
 public class DemoApplication {
