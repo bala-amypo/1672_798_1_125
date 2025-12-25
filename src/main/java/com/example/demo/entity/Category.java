@@ -65,18 +65,28 @@ public class Category {
     }
 
     public void setMenuItems(Set<MenuItem> menuItems) {
-        this.menuItems = menuItems;
+        this.menuItems = (menuItems != null) ? menuItems : new HashSet<>();
     }
 
     // ===================== SAFE HELPER METHODS =====================
 
     public void addMenuItem(MenuItem item) {
+        if (item == null) return;
+
         this.menuItems.add(item);
-        item.getCategories().add(this);
+
+        if (item.getCategories() != null) {
+            item.getCategories().add(this);
+        }
     }
 
     public void removeMenuItem(MenuItem item) {
+        if (item == null) return;
+
         this.menuItems.remove(item);
-        item.getCategories().remove(this);
+
+        if (item.getCategories() != null) {
+            item.getCategories().remove(this);
+        }
     }
 }
