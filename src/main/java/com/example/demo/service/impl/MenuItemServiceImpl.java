@@ -1,4 +1,5 @@
-package com.example.demo.service;
+package com.example.demo.service.impl;
+
 import org.springframework.stereotype.Service;
 
 import com.example.demo.entity.MenuItem;
@@ -7,6 +8,7 @@ import com.example.demo.repository.CategoryRepository;
 import com.example.demo.repository.MenuItemRepository;
 import com.example.demo.repository.RecipeIngredientRepository;
 import com.example.demo.service.MenuItemService;
+
 import java.util.List;
 
 @Service
@@ -16,7 +18,7 @@ public class MenuItemServiceImpl implements MenuItemService {
     private final RecipeIngredientRepository recipeIngredientRepository;
     private final CategoryRepository categoryRepository;
 
-    // 🔴 EXACT constructor order
+    // 🔴 EXACT constructor order (DO NOT CHANGE)
     public MenuItemServiceImpl(
             MenuItemRepository menuItemRepository,
             RecipeIngredientRepository recipeIngredientRepository,
