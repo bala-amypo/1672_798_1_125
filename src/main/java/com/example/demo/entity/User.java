@@ -22,6 +22,9 @@ public class User {
 
     private String role = "MANAGER";
 
+    // 👉 REQUIRED BY TESTS
+    private Boolean active = true;
+
     private Timestamp createdAt;
 
     @PrePersist
@@ -29,22 +32,57 @@ public class User {
         createdAt = new Timestamp(System.currentTimeMillis());
     }
 
-    // Getters and Setters
+    // ===================== GETTERS =====================
+
+    public Long getId() {
+        return id;
+    }
+
     public String getFullName() {
-    return fullName;
-}
+        return fullName;
+    }
 
-public void setFullName(String fullName) {
-    this.fullName = fullName;
-}
+    public String getEmail() {
+        return email;
+    }
 
-    public Long getId() { return id; }
-    public String getEmail() { return email; }
-    public String getPassword() { return password; }
-    public String getRole() { return role; }
+    public String getPassword() {
+        return password;
+    }
 
-    public void setId(Long id) { this.id = id; }
-    public void setEmail(String email) { this.email = email; }
-    public void setPassword(String password) { this.password = password; }
-    public void setRole(String role) { this.role = role; }
+    public String getRole() {
+        return role;
+    }
+
+    // 👉 TEST EXPECTED
+    public Boolean getActive() {
+        return active;
+    }
+
+    // ===================== SETTERS =====================
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    // 👉 TEST EXPECTED
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
 }
