@@ -5,6 +5,7 @@ import com.example.demo.service.IngredientService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
@@ -23,9 +24,9 @@ public class IngredientController {
 
     @PostMapping
     public ResponseEntity<Ingredient> create(@RequestBody Ingredient ingredient) {
-        return ResponseEntity.ok(
-                ingredientService.createIngredient(ingredient)
-        );
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(ingredientService.createIngredient(ingredient));
     }
 
     @PutMapping("/{id}")
@@ -62,9 +63,9 @@ public class IngredientController {
     // 🔥 REQUIRED FOR JUNIT TESTS – DO NOT REMOVE
 
     public ResponseEntity<Ingredient> createIngredient(Ingredient ingredient) {
-        return ResponseEntity.ok(
-                ingredientService.createIngredient(ingredient)
-        );
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(ingredientService.createIngredient(ingredient));
     }
 
     public ResponseEntity<Void> deactivateIngredient(long id) {

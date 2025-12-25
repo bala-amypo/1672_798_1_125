@@ -1,9 +1,12 @@
 package com.example.demo.service.impl;
+
 import com.example.demo.service.CategoryService;
 import com.example.demo.entity.Category;
+import com.example.demo.exception.BadRequestException;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.CategoryRepository;
-import org.springframework.stereotype.Service;  
+
+import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
@@ -11,21 +14,33 @@ public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
 
-    
     public CategoryServiceImpl(CategoryRepository categoryRepository) {
         this.categoryRepository = categoryRepository;
     }
 
     @Override
     public Category createCategory(Category category) {
+
+        // 🔥 REQUIRED: unique name check
+        categoryRepository.findByNameIgnoreCase(category.getName())
+                .ifPresent(c -> {
+                    throw new BadRequestException("Category already exists");
+                });
+
+        // 🔥 REQUIRED: active by default
+        category.setActive(true);
+
         return categoryRepository.save(category);
     }
 
     @Override
     public Category updateCategory(Long id, Category category) {
+
         Category existing = getCategoryById(id);
+
         existing.setName(category.getName());
         existing.setDescription(category.getDescription());
+
         return categoryRepository.save(existing);
     }
 

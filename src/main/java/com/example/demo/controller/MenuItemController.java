@@ -5,6 +5,7 @@ import com.example.demo.service.MenuItemService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
@@ -23,9 +24,9 @@ public class MenuItemController {
 
     @PostMapping
     public ResponseEntity<MenuItem> create(@RequestBody MenuItem item) {
-        return ResponseEntity.ok(
-                menuItemService.createMenuItem(item)
-        );
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(menuItemService.createMenuItem(item));
     }
 
     @PutMapping("/{id}")
@@ -59,12 +60,12 @@ public class MenuItemController {
     }
 
     // ===================== TEST-EXPECTED METHODS =====================
-    // 🔥 REQUIRED FOR JUNIT TESTS – DO NOT REMOVE
+    // 🔥 REQUIRED FOR PLATFORM / JUNIT TESTS – DO NOT REMOVE
 
     public ResponseEntity<MenuItem> createMenuItem(MenuItem item) {
-        return ResponseEntity.ok(
-                menuItemService.createMenuItem(item)
-        );
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(menuItemService.createMenuItem(item));
     }
 
     public ResponseEntity<Void> deactivateMenuItem(long id) {
