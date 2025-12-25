@@ -1,12 +1,12 @@
 package com.example.demo.service;
+
 import org.springframework.stereotype.Service;
 
 import com.example.demo.entity.*;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.*;
-import com.example.demo.service.ProfitCalculationService;
-import java.math.BigDecimal;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -17,7 +17,7 @@ public class ProfitCalculationServiceImpl implements ProfitCalculationService {
     private final IngredientRepository ingredientRepository;
     private final ProfitCalculationRecordRepository profitRepo;
 
-    // 🔴 EXACT constructor order
+    // 🔴 EXACT constructor order (DO NOT CHANGE)
     public ProfitCalculationServiceImpl(
             MenuItemRepository menuItemRepository,
             RecipeIngredientRepository recipeIngredientRepository,
@@ -30,17 +30,24 @@ public class ProfitCalculationServiceImpl implements ProfitCalculationService {
         this.profitRepo = profitRepo;
     }
 
+    // ================= CORE LOGIC =================
+
     @Override
     public ProfitCalculationRecord calculateProfit(Long menuItemId) {
+
         MenuItem menuItem = menuItemRepository.findById(menuItemId)
                 .orElseThrow(() -> new ResourceNotFoundException("Menu item not found"));
 
-        List<RecipeIngredient> ingredients = recipeIngredientRepository.findByMenuItemId(menuItemId);
+        List<RecipeIngredient> ingredients =
+                recipeIngredientRepository.findByMenuItemId(menuItemId);
 
         BigDecimal totalCost = BigDecimal.ZERO;
+
         for (RecipeIngredient ri : ingredients) {
-            BigDecimal cost = ri.getIngredient().getCostPerUnit()
-                    .multiply(BigDecimal.valueOf(ri.getQuantityRequired()));
+            BigDecimal cost =
+                    ri.getIngredient().getCostPerUnit()
+                      .multiply(BigDecimal.valueOf(ri.getQuantityRequired()));
+
             totalCost = totalCost.add(cost);
         }
 
@@ -68,5 +75,15 @@ public class ProfitCalculationServiceImpl implements ProfitCalculationService {
     @Override
     public List<ProfitCalculationRecord> getAllCalculations() {
         return profitRepo.findAll();
+    }
+
+    // ================= 🔥 TEST-EXPECTED METHODS =================
+
+    // REQUIRED BY JUNIT
+    public List<ProfitCalculationRecord> findRecordsWithMarginBetween(
+            double min,
+            double max
+    ) {
+        return profitRepo.findByProfitMarginBetween(min, max);
     }
 }
