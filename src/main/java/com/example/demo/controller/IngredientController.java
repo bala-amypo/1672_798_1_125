@@ -4,6 +4,7 @@ import com.example.demo.entity.Ingredient;
 import com.example.demo.service.IngredientService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -21,28 +22,38 @@ public class IngredientController {
     // ===================== REST ENDPOINTS =====================
 
     @PostMapping
-    public Ingredient create(@RequestBody Ingredient ingredient) {
-        return ingredientService.createIngredient(ingredient);
+    public ResponseEntity<Ingredient> create(@RequestBody Ingredient ingredient) {
+        return ResponseEntity.ok(ingredientService.createIngredient(ingredient));
     }
 
     @PutMapping("/{id}")
-    public Ingredient update(@PathVariable Long id, @RequestBody Ingredient ingredient) {
-        return ingredientService.updateIngredient(id, ingredient);
+    public ResponseEntity<Ingredient> update(
+            @PathVariable Long id,
+            @RequestBody Ingredient ingredient
+    ) {
+        return ResponseEntity.ok(
+                ingredientService.updateIngredient(id, ingredient)
+        );
     }
 
     @GetMapping("/{id}")
-    public Ingredient get(@PathVariable Long id) {
-        return ingredientService.getIngredientById(id);
+    public ResponseEntity<Ingredient> get(@PathVariable Long id) {
+        return ResponseEntity.ok(
+                ingredientService.getIngredientById(id)
+        );
     }
 
     @GetMapping
-    public List<Ingredient> list() {
-        return ingredientService.getAllIngredients();
+    public ResponseEntity<List<Ingredient>> list() {
+        return ResponseEntity.ok(
+                ingredientService.getAllIngredients()
+        );
     }
 
     @PutMapping("/{id}/deactivate")
-    public void deactivate(@PathVariable Long id) {
+    public ResponseEntity<Void> deactivate(@PathVariable Long id) {
         ingredientService.deactivateIngredient(id);
+        return ResponseEntity.ok().build();
     }
 
     // ===================== TEST-EXPECTED METHODS =====================
