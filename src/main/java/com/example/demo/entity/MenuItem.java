@@ -3,6 +3,7 @@ package com.example.demo.entity;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -28,13 +29,14 @@ public class MenuItem {
     private Timestamp createdAt;
     private Timestamp updatedAt;
 
+    // 🔥 FIX 1: initialize collection
     @ManyToMany
     @JoinTable(
         name = "menu_item_categories",
         joinColumns = @JoinColumn(name = "menu_item_id"),
         inverseJoinColumns = @JoinColumn(name = "category_id")
     )
-    private Set<Category> categories;
+    private Set<Category> categories = new HashSet<>();
 
     @PrePersist
     protected void onCreate() {
@@ -104,6 +106,18 @@ public class MenuItem {
     }
 
     public void setCategories(Set<Category> categories) {
-        this.categories = categories;
+        this.categories = categories != null ? categories : new HashSet<>();
+    }
+
+    // ===================== HELPER METHODS (TESTS EXPECT THIS) =====================
+
+    public void addCategory(Category category) {
+        this.categories.add(category);
+        category.getMenuItems().add(this);
+    }
+
+    public void removeCategory(Category category) {
+        this.categories.remove(category);
+        category.getMenuItems().remove(this);
     }
 }
