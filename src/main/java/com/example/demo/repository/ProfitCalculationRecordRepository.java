@@ -8,9 +8,12 @@ import java.util.List;
 public interface ProfitCalculationRecordRepository
         extends JpaRepository<ProfitCalculationRecord, Long> {
 
-    // Existing method – REQUIRED by tests / service
+    // already required
     List<ProfitCalculationRecord> findByMenuItemId(Long menuItemId);
 
-    // 🔴 REQUIRED to fix your compilation error
+    // already added earlier
     List<ProfitCalculationRecord> findByProfitMarginBetween(double min, double max);
+
+    // 🔥 REQUIRED BY JUNIT TESTS
+    List<ProfitCalculationRecord> findByProfitMarginGreaterThanEqual(double margin);
 }

@@ -61,15 +61,20 @@ public class MenuItemController {
     // ===================== TEST-EXPECTED METHODS =====================
     // 🔥 REQUIRED FOR JUNIT TESTS – DO NOT REMOVE
 
-    public MenuItem createMenuItem(MenuItem item) {
-        return menuItemService.createMenuItem(item);
+    public ResponseEntity<MenuItem> createMenuItem(MenuItem item) {
+        return ResponseEntity.ok(
+                menuItemService.createMenuItem(item)
+        );
     }
 
-    public void deactivateMenuItem(long id) {
+    public ResponseEntity<Void> deactivateMenuItem(long id) {
         menuItemService.deactivateMenuItem(id);
+        return ResponseEntity.ok().build();
     }
 
-    public List<MenuItem> getAllMenuItems() {
-        return menuItemService.getAllMenuItems();
+    public ResponseEntity<List<MenuItem>> getAllMenuItems() {
+        return ResponseEntity.ok(
+                menuItemService.getAllMenuItems()
+        );
     }
 }
