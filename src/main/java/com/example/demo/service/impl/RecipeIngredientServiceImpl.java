@@ -86,4 +86,15 @@ public class RecipeIngredientServiceImpl implements RecipeIngredientService {
     public Double getTotalQuantityOfIngredient(Long ingredientId) {
         return recipeIngredientRepository.getTotalQuantityByIngredientId(ingredientId);
     }
+    // 🔥 REQUIRED BY TESTS
+@Override
+public RecipeIngredient addIngredientToMenuItem(RecipeIngredient recipeIngredient) {
+
+    if (recipeIngredient.getQuantityRequired() == null ||
+        recipeIngredient.getQuantityRequired() <= 0) {
+        throw new BadRequestException("Quantity must be greater than zero");
+    }
+
+    return recipeIngredientRepository.save(recipeIngredient);
+ }
 }
