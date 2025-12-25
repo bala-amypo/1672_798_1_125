@@ -95,4 +95,11 @@ public class UserServiceImpl implements UserService {
 
         return jwtTokenProvider.createToken(user.getEmail(), user.getRole());
     }
+
+    @Override
+public User findByEmailIgnoreCase(String email) {
+    return userRepository.findByEmailIgnoreCase(email)
+            .orElseThrow(() -> new BadRequestException("Invalid credentials"));
+}
+
 }
