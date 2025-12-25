@@ -18,6 +18,8 @@ public class IngredientController {
         this.ingredientService = ingredientService;
     }
 
+    // ===================== REST ENDPOINTS =====================
+
     @PostMapping
     public Ingredient create(@RequestBody Ingredient ingredient) {
         return ingredientService.createIngredient(ingredient);
@@ -41,5 +43,20 @@ public class IngredientController {
     @PutMapping("/{id}/deactivate")
     public void deactivate(@PathVariable Long id) {
         ingredientService.deactivateIngredient(id);
+    }
+
+    // ===================== TEST-EXPECTED METHODS =====================
+    // 🔥 DO NOT REMOVE – REQUIRED FOR JUNIT TESTS
+
+    public Ingredient createIngredient(Ingredient ingredient) {
+        return ingredientService.createIngredient(ingredient);
+    }
+
+    public void deactivateIngredient(long id) {
+        ingredientService.deactivateIngredient(id);
+    }
+
+    public List<Ingredient> getAllIngredients() {
+        return ingredientService.getAllIngredients();
     }
 }

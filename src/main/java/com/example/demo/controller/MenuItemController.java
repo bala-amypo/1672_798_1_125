@@ -18,6 +18,8 @@ public class MenuItemController {
         this.menuItemService = menuItemService;
     }
 
+    // ===================== REST ENDPOINTS =====================
+
     @PostMapping
     public MenuItem create(@RequestBody MenuItem item) {
         return menuItemService.createMenuItem(item);
@@ -41,5 +43,20 @@ public class MenuItemController {
     @PutMapping("/{id}/deactivate")
     public void deactivate(@PathVariable Long id) {
         menuItemService.deactivateMenuItem(id);
+    }
+
+    // ===================== TEST-EXPECTED METHODS =====================
+    // 🔥 REQUIRED FOR JUNIT TESTS – DO NOT REMOVE
+
+    public MenuItem createMenuItem(MenuItem item) {
+        return menuItemService.createMenuItem(item);
+    }
+
+    public void deactivateMenuItem(long id) {
+        menuItemService.deactivateMenuItem(id);
+    }
+
+    public List<MenuItem> getAllMenuItems() {
+        return menuItemService.getAllMenuItems();
     }
 }
