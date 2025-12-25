@@ -23,7 +23,9 @@ public class IngredientController {
 
     @PostMapping
     public ResponseEntity<Ingredient> create(@RequestBody Ingredient ingredient) {
-        return ResponseEntity.ok(ingredientService.createIngredient(ingredient));
+        return ResponseEntity.ok(
+                ingredientService.createIngredient(ingredient)
+        );
     }
 
     @PutMapping("/{id}")
@@ -57,17 +59,22 @@ public class IngredientController {
     }
 
     // ===================== TEST-EXPECTED METHODS =====================
-    // 🔥 DO NOT REMOVE – REQUIRED FOR JUNIT TESTS
+    // 🔥 REQUIRED FOR JUNIT TESTS – DO NOT REMOVE
 
-    public Ingredient createIngredient(Ingredient ingredient) {
-        return ingredientService.createIngredient(ingredient);
+    public ResponseEntity<Ingredient> createIngredient(Ingredient ingredient) {
+        return ResponseEntity.ok(
+                ingredientService.createIngredient(ingredient)
+        );
     }
 
-    public void deactivateIngredient(long id) {
+    public ResponseEntity<Void> deactivateIngredient(long id) {
         ingredientService.deactivateIngredient(id);
+        return ResponseEntity.ok().build();
     }
 
-    public List<Ingredient> getAllIngredients() {
-        return ingredientService.getAllIngredients();
+    public ResponseEntity<List<Ingredient>> getAllIngredients() {
+        return ResponseEntity.ok(
+                ingredientService.getAllIngredients()
+        );
     }
 }
