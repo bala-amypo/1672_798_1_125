@@ -8,6 +8,7 @@ import com.example.demo.exception.BadRequestException;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.security.JwtTokenProvider;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -18,17 +19,18 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
 
-    // 🔥 REQUIRED BY JUNIT TESTS
+    // 🔥 REQUIRED BY JUNIT TESTS (NO @Autowired)
     public UserServiceImpl(
             UserRepository userRepository,
             PasswordEncoder passwordEncoder
     ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.jwtTokenProvider = null; // tests don't use JWT here
+        this.jwtTokenProvider = null; // tests don't use JWT
     }
 
-    // 🔥 REQUIRED BY SPRING BOOT
+    // 🔥 REQUIRED BY SPRING BOOT (EXPLICIT)
+    @Autowired
     public UserServiceImpl(
             UserRepository userRepository,
             PasswordEncoder passwordEncoder,
