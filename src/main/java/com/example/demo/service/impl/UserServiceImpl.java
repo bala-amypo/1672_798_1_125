@@ -19,17 +19,17 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
 
-    // 🔥 REQUIRED BY JUNIT TESTS (NO @Autowired)
+    // 🔥 REQUIRED BY JUNIT TESTS
     public UserServiceImpl(
             UserRepository userRepository,
             PasswordEncoder passwordEncoder
     ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.jwtTokenProvider = null; // tests don't use JWT
+        this.jwtTokenProvider = null; // tests don't use JWT here
     }
 
-    // 🔥 REQUIRED BY SPRING BOOT (EXPLICIT)
+    // 🔥 REQUIRED BY SPRING BOOT
     @Autowired
     public UserServiceImpl(
             UserRepository userRepository,
@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public String register(RegisterRequest req) {
 
-        if (userRepository.existsByEmail(req.getEmail())) {
+        if (userRepository.findByEmailIgnoreCase(req.getEmail()).isPresent()) {
             throw new BadRequestException("Email already in use");
         }
 
@@ -63,7 +63,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User registerAndReturnUser(RegisterRequest req) {
 
-        if (userRepository.existsByEmail(req.getEmail())) {
+        if (userRepository.findByEmailIgnoreCase(req.getEmail()).isPresent()) {
             throw new BadRequestException("Email already in use");
         }
 
@@ -88,7 +88,6 @@ public class UserServiceImpl implements UserService {
             throw new BadRequestException("Invalid credentials");
         }
 
-        // 🔥 Tests may not initialize JWT provider
         if (jwtTokenProvider == null) {
             return "DUMMY_TOKEN";
         }
@@ -96,10 +95,10 @@ public class UserServiceImpl implements UserService {
         return jwtTokenProvider.createToken(user.getEmail(), user.getRole());
     }
 
+    // 🔥 REQUIRED BY TESTS
     @Override
-public User findByEmailIgnoreCase(String email) {
-    return userRepository.findByEmailIgnoreCase(email)
-            .orElseThrow(() -> new BadRequestException("Invalid credentials"));
-}
-
+    public User findByEmailIgnoreCase(String email) {
+        return userRepository.findByEmailIgnoreCase(email)
+                .orElseThrow(() -> new BadRequestException("Invalid credentials"));
+    }
 }
