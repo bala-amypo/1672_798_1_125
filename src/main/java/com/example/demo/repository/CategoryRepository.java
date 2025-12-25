@@ -7,5 +7,9 @@ import java.util.Optional;
 
 public interface CategoryRepository extends JpaRepository<Category, Long> {
 
+    // Existing method (keep it)
     Optional<Category> findByName(String name);
+
+    // 🔥 REQUIRED FOR TESTS
+    Optional<Category> findByNameIgnoreCase(String name);
 }
