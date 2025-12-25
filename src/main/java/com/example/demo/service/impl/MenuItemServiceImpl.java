@@ -37,19 +37,16 @@ public class MenuItemServiceImpl implements MenuItemService {
     @Override
     public MenuItem createMenuItem(MenuItem item) {
 
-        // 🔥 Price validation
         if (item.getSellingPrice() == null ||
                 item.getSellingPrice().compareTo(BigDecimal.ZERO) <= 0) {
             throw new BadRequestException("price");
         }
 
-        // 🔥 Unique name check
         menuItemRepository.findByNameIgnoreCase(item.getName())
                 .ifPresent(m -> {
                     throw new BadRequestException("Menu item already exists");
                 });
 
-        // 🔥 Category validation (if provided)
         if (item.getCategories() != null && !item.getCategories().isEmpty()) {
 
             Set<Category> validatedCategories = new HashSet<>();
@@ -59,7 +56,7 @@ public class MenuItemServiceImpl implements MenuItemService {
                         .orElseThrow(() ->
                                 new ResourceNotFoundException("Category not found"));
 
-                if (!category.isActive()) {
+                if (Boolean.FALSE.equals(category.getActive())) {
                     throw new BadRequestException("Category is inactive");
                 }
 
@@ -77,19 +74,16 @@ public class MenuItemServiceImpl implements MenuItemService {
 
         MenuItem existing = getMenuItemById(id);
 
-        // 🔥 Price validation
         if (item.getSellingPrice() != null &&
                 item.getSellingPrice().compareTo(BigDecimal.ZERO) <= 0) {
             throw new BadRequestException("price");
         }
 
-        // 🔥 Activation rule
-        if (item.isActive() &&
+        if (Boolean.TRUE.equals(item.getActive()) &&
                 !recipeIngredientRepository.existsByMenuItemId(id)) {
             throw new BadRequestException("recipe");
         }
 
-        // 🔥 Category validation during update
         if (item.getCategories() != null && !item.getCategories().isEmpty()) {
 
             Set<Category> validatedCategories = new HashSet<>();
@@ -99,7 +93,7 @@ public class MenuItemServiceImpl implements MenuItemService {
                         .orElseThrow(() ->
                                 new ResourceNotFoundException("Category not found"));
 
-                if (!category.isActive()) {
+                if (Boolean.FALSE.equals(category.getActive())) {
                     throw new BadRequestException("Category is inactive");
                 }
 
@@ -111,7 +105,7 @@ public class MenuItemServiceImpl implements MenuItemService {
 
         existing.setName(item.getName());
         existing.setSellingPrice(item.getSellingPrice());
-        existing.setActive(item.isActive());
+        existing.setActive(item.getActive());
 
         return menuItemRepository.save(existing);
     }
@@ -124,7 +118,6 @@ public class MenuItemServiceImpl implements MenuItemService {
 
     @Override
     public List<MenuItem> getAllMenuItems() {
-        // 🔥 Required by tests
         return menuItemRepository.findAll();
     }
 
