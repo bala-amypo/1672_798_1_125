@@ -30,6 +30,7 @@ public class UserServiceImpl implements UserService {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
+    // ================= REGISTER (STRING RESPONSE) =================
     @Override
     public String register(RegisterRequest req) {
 
@@ -41,15 +42,31 @@ public class UserServiceImpl implements UserService {
         user.setFullName(req.getFullName());
         user.setEmail(req.getEmail());
         user.setPassword(passwordEncoder.encode(req.getPassword()));
-
-        if (req.getRole() != null) {
-            user.setRole(req.getRole());
-        }
+        user.setRole(req.getRole() != null ? req.getRole() : "MANAGER");
 
         userRepository.save(user);
         return "User registered successfully";
     }
 
+    // ================= REGISTER (USER RESPONSE) =================
+    // 🔥 REQUIRED FOR TESTS
+    @Override
+    public User registerAndReturnUser(RegisterRequest req) {
+
+        if (userRepository.existsByEmail(req.getEmail())) {
+            throw new BadRequestException("Email already in use");
+        }
+
+        User user = new User();
+        user.setFullName(req.getFullName());
+        user.setEmail(req.getEmail());
+        user.setPassword(passwordEncoder.encode(req.getPassword()));
+        user.setRole(req.getRole() != null ? req.getRole() : "MANAGER");
+
+        return userRepository.save(user);
+    }
+
+    // ================= LOGIN =================
     @Override
     public String login(AuthRequest req) {
 
@@ -61,7 +78,7 @@ public class UserServiceImpl implements UserService {
             throw new BadRequestException("Invalid credentials");
         }
 
-        // ✅ method name expected by tests
-        return jwtTokenProvider.generateToken(null, user);
+        // ✅ matches JwtTokenProvider
+        return jwtTokenProvider.createToken(user.getEmail(), user.getRole());
     }
 }
