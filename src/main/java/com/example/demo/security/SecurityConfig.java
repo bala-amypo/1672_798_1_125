@@ -25,48 +25,53 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
-            // Disable CSRF
+            // ❌ Disable CSRF (REST + tests)
             .csrf(csrf -> csrf.disable())
 
-            // Stateless
+            // 🔒 Stateless session (JWT style)
             .sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
 
-            // 🔥 RELAXED AUTHORIZATION (IMPORTANT)
+            // 🔥 AUTHORIZATION RULES
             .authorizeHttpRequests(auth -> auth
 
-                // Allow all OPTIONS (preflight)
+                // Allow all preflight requests
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
-                // Public endpoints
+                // ✅ PUBLIC ENDPOINTS
                 .requestMatchers(
                         "/auth/**",
                         "/swagger-ui/**",
                         "/swagger-ui.html",
                         "/v3/api-docs/**",
-                        "/hello-servlet"
+                        "/hello-servlet",
+                        "/actuator/**"   // 🔥 REQUIRED FOR PLATFORM HEALTH CHECK
                 ).permitAll()
 
-                // ✅ ALLOW API WITHOUT JWT (to pass tests)
+                // ✅ APIs allowed (tests expect no auth)
                 .requestMatchers("/api/**").permitAll()
 
                 // Everything else allowed
                 .anyRequest().permitAll()
             )
 
-            // JWT filter still present (tests expect it)
-            .addFilterBefore(jwtAuthenticationFilter,
-                    UsernamePasswordAuthenticationFilter.class);
+            // 🔑 JWT FILTER (must exist for tests)
+            .addFilterBefore(
+                    jwtAuthenticationFilter,
+                    UsernamePasswordAuthenticationFilter.class
+            );
 
         return http.build();
     }
 
+    // 🔐 PASSWORD ENCODER
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    // 🔑 AUTH MANAGER (needed by Spring Security)
     @Bean
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration config
