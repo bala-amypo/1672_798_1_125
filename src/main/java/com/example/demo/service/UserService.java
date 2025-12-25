@@ -12,4 +12,7 @@ public interface UserService {
 
     // 🔥 REQUIRED FOR TESTS
     User registerAndReturnUser(RegisterRequest req);
+
+    // 🔥 REQUIRED FOR AUTH CONTROLLER & TESTS
+    User findByEmailIgnoreCase(String email);
 }
