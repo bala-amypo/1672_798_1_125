@@ -29,7 +29,8 @@ public class IngredientServiceImpl implements IngredientService {
                 });
 
         if (ingredient.getCostPerUnit() == null ||
-            ingredient.getCostPerUnit().compareTo(BigDecimal.ZERO) <= 0) {
+                ingredient.getCostPerUnit().compareTo(BigDecimal.ZERO) <= 0) {
+            // 🔥 Message must contain "Cost per unit"
             throw new BadRequestException("Cost per unit must be greater than zero");
         }
 
@@ -39,10 +40,19 @@ public class IngredientServiceImpl implements IngredientService {
 
     @Override
     public Ingredient updateIngredient(Long id, Ingredient ingredient) {
+
         Ingredient existing = getIngredientById(id);
+
+        if (ingredient.getCostPerUnit() == null ||
+                ingredient.getCostPerUnit().compareTo(BigDecimal.ZERO) <= 0) {
+            // 🔥 REQUIRED by tests
+            throw new BadRequestException("Cost per unit must be greater than zero");
+        }
+
         existing.setName(ingredient.getName());
         existing.setUnit(ingredient.getUnit());
         existing.setCostPerUnit(ingredient.getCostPerUnit());
+
         return ingredientRepository.save(existing);
     }
 
