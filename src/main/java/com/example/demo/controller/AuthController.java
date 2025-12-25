@@ -30,15 +30,17 @@ public class AuthController {
         this.userService = userService;
     }
 
+    // ===================== REGISTER =====================
     @PostMapping("/register")
     public ResponseEntity<User> register(@RequestBody RegisterRequest req) {
         User user = userService.registerAndReturnUser(req);
         return ResponseEntity.ok(user);
     }
 
+    // ===================== LOGIN =====================
     @PostMapping("/login")
-    public AuthResponse login(@RequestBody AuthRequest req) {
+    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest req) {
         String token = userService.login(req);
-        return new AuthResponse(token);
+        return ResponseEntity.ok(new AuthResponse(token));
     }
 }
