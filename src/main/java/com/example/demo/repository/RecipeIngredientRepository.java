@@ -13,7 +13,9 @@ public interface RecipeIngredientRepository
 
     boolean existsByMenuItemId(Long menuItemId);
 
-    @Query("SELECT COALESCE(SUM(r.quantityRequired), 0) " +
-           "FROM RecipeIngredient r WHERE r.ingredient.id = :ingredientId")
+    @Query(
+        "SELECT COALESCE(SUM(r.quantityRequired), 0) " +
+        "FROM RecipeIngredient r WHERE r.ingredient.id = :ingredientId"
+    )
     Double getTotalQuantityByIngredientId(Long ingredientId);
 }

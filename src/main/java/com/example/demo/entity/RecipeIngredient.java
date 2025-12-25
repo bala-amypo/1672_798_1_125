@@ -1,3 +1,7 @@
+package com.example.demo.entity;
+
+import jakarta.persistence.*;
+
 @Entity
 @Table(name = "recipe_ingredients")
 public class RecipeIngredient {
@@ -33,7 +37,7 @@ public class RecipeIngredient {
         return quantityRequired;
     }
 
-    // 👉 TEST EXPECTED METHOD
+    // ✅ TEST EXPECTED METHOD
     public Double getQuantity() {
         return quantityRequired;
     }
@@ -56,7 +60,7 @@ public class RecipeIngredient {
         this.quantityRequired = quantityRequired;
     }
 
-    // 👉 TEST EXPECTED METHOD
+    // ✅ TEST EXPECTED METHOD
     public void setQuantity(Double quantity) {
         this.quantityRequired = quantity;
     }
