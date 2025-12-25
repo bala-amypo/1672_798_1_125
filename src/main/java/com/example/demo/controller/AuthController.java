@@ -8,7 +8,10 @@ import com.example.demo.service.UserService;
 import com.example.demo.security.JwtTokenProvider;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -34,13 +37,27 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<User> register(@RequestBody RegisterRequest req) {
         User user = userService.registerAndReturnUser(req);
-        return ResponseEntity.ok(user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 
     // ===================== LOGIN =====================
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest req) {
-        String token = userService.login(req);
+
+        // 🔥 REQUIRED BY TESTS
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        req.getEmail(),
+                        req.getPassword()
+                )
+        );
+
+        // 🔥 Load user
+        User user = userService.findByEmailIgnoreCase(req.getEmail());
+
+        // 🔥 Generate token via provider (tests mock this)
+        String token = jwtTokenProvider.generateToken(authentication, user);
+
         return ResponseEntity.ok(new AuthResponse(token));
     }
 }
