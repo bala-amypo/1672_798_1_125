@@ -62,7 +62,6 @@
 //     }
 // }
 
-
 package com.example.demo.controller;
 
 import com.example.demo.dto.AuthRequest;
@@ -70,9 +69,11 @@ import com.example.demo.dto.RegisterRequest;
 import com.example.demo.dto.AuthResponse;
 import com.example.demo.entity.User;
 import com.example.demo.service.UserService;
+import com.example.demo.security.JwtTokenProvider;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -80,21 +81,46 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final UserService userService;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final PasswordEncoder passwordEncoder;
 
-    public AuthController(UserService userService) {
+    // 🔥 Use only these three dependencies
+    public AuthController(
+            UserService userService,
+            JwtTokenProvider jwtTokenProvider,
+            PasswordEncoder passwordEncoder
+    ) {
         this.userService = userService;
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.passwordEncoder = passwordEncoder;
     }
 
+    // ===================== REGISTER =====================
     @PostMapping("/register")
     public ResponseEntity<User> register(@RequestBody RegisterRequest req) {
         User user = userService.registerAndReturnUser(req);
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 
+    // ===================== LOGIN =====================
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest req) {
-        // Simply call userService.login() which handles everything
-        String token = userService.login(req);
-        return ResponseEntity.ok(new AuthResponse(token));
+        try {
+            // 🔥 Load user directly
+            User user = userService.findByEmailIgnoreCase(req.getEmail());
+            
+            // 🔥 Manually check password
+            if (!passwordEncoder.matches(req.getPassword(), user.getPassword())) {
+                throw new RuntimeException("Invalid credentials");
+            }
+            
+            // 🔥 Generate token directly
+            String token = jwtTokenProvider.createToken(user.getEmail(), user.getRole());
+            
+            return ResponseEntity.ok(new AuthResponse(token));
+        } catch (Exception e) {
+            // Return 401 for authentication failures
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
     }
 }

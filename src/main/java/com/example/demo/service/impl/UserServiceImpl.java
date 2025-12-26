@@ -104,7 +104,6 @@
 // }
 
 
-
 package com.example.demo.service.impl;
 
 import com.example.demo.service.UserService;
@@ -115,9 +114,6 @@ import com.example.demo.exception.BadRequestException;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.security.JwtTokenProvider;
 
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -127,19 +123,16 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
-    private final AuthenticationManager authenticationManager;
 
-    // Single constructor with all required dependencies
+    // 🔥 Remove AuthenticationManager from constructor
     public UserServiceImpl(
             UserRepository userRepository,
             PasswordEncoder passwordEncoder,
-            JwtTokenProvider jwtTokenProvider,
-            AuthenticationManager authenticationManager
+            JwtTokenProvider jwtTokenProvider
     ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtTokenProvider = jwtTokenProvider;
-        this.authenticationManager = authenticationManager;
     }
 
     @Override
@@ -175,7 +168,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String login(AuthRequest req) {
-        // First verify user exists and password matches
         User user = userRepository
                 .findByEmailIgnoreCase(req.getEmail())
                 .orElseThrow(() -> new BadRequestException("Invalid credentials"));
@@ -184,15 +176,6 @@ public class UserServiceImpl implements UserService {
             throw new BadRequestException("Invalid credentials");
         }
 
-        // Use authentication manager to authenticate
-        Authentication authentication = authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(
-                req.getEmail(),
-                req.getPassword()
-            )
-        );
-
-        // Generate token using the authenticated user
         return jwtTokenProvider.createToken(user.getEmail(), user.getRole());
     }
 
