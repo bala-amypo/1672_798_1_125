@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -16,9 +17,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final CustomUserDetailsService customUserDetailsService;
 
-    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
+    public SecurityConfig(
+            JwtAuthenticationFilter jwtAuthenticationFilter,
+            CustomUserDetailsService customUserDetailsService
+    ) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+        this.customUserDetailsService = customUserDetailsService;
     }
 
     @Bean
@@ -35,8 +41,6 @@ public class SecurityConfig {
 
             // 🔥 AUTHORIZATION RULES
             .authorizeHttpRequests(auth -> auth
-
-                // Allow all preflight requests
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
                 // ✅ PUBLIC ENDPOINTS
@@ -46,15 +50,17 @@ public class SecurityConfig {
                         "/swagger-ui.html",
                         "/v3/api-docs/**",
                         "/hello-servlet",
-                        "/actuator/**"   // 🔥 REQUIRED FOR PLATFORM HEALTH CHECK
+                        "/actuator/**"
                 ).permitAll()
 
                 // ✅ APIs allowed (tests expect no auth)
                 .requestMatchers("/api/**").permitAll()
 
-                // Everything else allowed
                 .anyRequest().permitAll()
             )
+
+            // 🔥 THIS IS THE FIX
+            .authenticationProvider(authenticationProvider())
 
             // 🔑 JWT FILTER (must exist for tests)
             .addFilterBefore(
@@ -65,13 +71,22 @@ public class SecurityConfig {
         return http.build();
     }
 
+    // ✅ REQUIRED FOR LOGIN TO WORK
+    @Bean
+    public DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService(customUserDetailsService);
+        provider.setPasswordEncoder(passwordEncoder());
+        return provider;
+    }
+
     // 🔐 PASSWORD ENCODER
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // 🔑 AUTH MANAGER (needed by Spring Security)
+    // 🔑 AUTH MANAGER
     @Bean
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration config
