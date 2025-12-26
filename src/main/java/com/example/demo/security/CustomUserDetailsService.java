@@ -23,16 +23,11 @@ public class CustomUserDetailsService implements UserDetailsService {
                         new UsernameNotFoundException("User not found")
                 );
 
-        // 🔥 CRITICAL FIX FOR TEST
-        String role = user.getRole();
-        if (role != null && role.startsWith("ROLE_")) {
-            role = role.substring(5); // remove ROLE_
-        }
-
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getEmail())
                 .password(user.getPassword())
-                .roles(role)
+                // 🔥 FIX: remove ROLE_ if present
+                .roles(user.getRole().replace("ROLE_", ""))
                 .build();
     }
 }
