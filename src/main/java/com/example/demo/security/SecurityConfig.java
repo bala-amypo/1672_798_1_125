@@ -1,170 +1,171 @@
-// package com.example.demo.security;
+    // package com.example.demo.security;
 
-// import org.springframework.context.annotation.Bean;
-// import org.springframework.context.annotation.Configuration;
-// import org.springframework.http.HttpMethod;
-// import org.springframework.security.authentication.AuthenticationManager;
-// import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-// import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-// import org.springframework.security.config.http.SessionCreationPolicy;
-// import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-// import org.springframework.security.crypto.password.PasswordEncoder;
-// import org.springframework.security.web.SecurityFilterChain;
-// import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+    // import org.springframework.context.annotation.Bean;
+    // import org.springframework.context.annotation.Configuration;
+    // import org.springframework.http.HttpMethod;
+    // import org.springframework.security.authentication.AuthenticationManager;
+    // import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+    // import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+    // import org.springframework.security.config.http.SessionCreationPolicy;
+    // import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+    // import org.springframework.security.crypto.password.PasswordEncoder;
+    // import org.springframework.security.web.SecurityFilterChain;
+    // import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-// @Configuration
-// public class SecurityConfig {
+    // @Configuration
+    // public class SecurityConfig {
 
-//     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    //     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-//     public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
-//         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-//     }
+    //     public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
+    //         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+    //     }
 
-//     @Bean
-//     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    //     @Bean
+    //     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-//         http
-//             // ❌ Disable CSRF (REST + tests)
-//             .csrf(csrf -> csrf.disable())
+    //         http
+    //             // ❌ Disable CSRF (REST + tests)
+    //             .csrf(csrf -> csrf.disable())
 
-//             // 🔒 Stateless session (JWT style)
-//             .sessionManagement(session ->
-//                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//             )
+    //             // 🔒 Stateless session (JWT style)
+    //             .sessionManagement(session ->
+    //                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+    //             )
 
-//             // 🔥 AUTHORIZATION RULES
-//             .authorizeHttpRequests(auth -> auth
+    //             // 🔥 AUTHORIZATION RULES
+    //             .authorizeHttpRequests(auth -> auth
 
-//                 // Allow all preflight requests
-//                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+    //                 // Allow all preflight requests
+    //                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
-//                 // ✅ PUBLIC ENDPOINTS
-//                 .requestMatchers(
-//                         "/auth/**",
-//                         "/swagger-ui/**",
-//                         "/swagger-ui.html",
-//                         "/v3/api-docs/**",
-//                         "/hello-servlet",
-//                         "/actuator/**"   // 🔥 REQUIRED FOR PLATFORM HEALTH CHECK
-//                 ).permitAll()
+    //                 // ✅ PUBLIC ENDPOINTS
+    //                 .requestMatchers(
+    //                         "/auth/**",
+    //                         "/swagger-ui/**",
+    //                         "/swagger-ui.html",
+    //                         "/v3/api-docs/**",
+    //                         "/hello-servlet",
+    //                         "/actuator/**"   // 🔥 REQUIRED FOR PLATFORM HEALTH CHECK
+    //                 ).permitAll()
 
-//                 // ✅ APIs allowed (tests expect no auth)
-//                 .requestMatchers("/api/**").permitAll()
+    //                 // ✅ APIs allowed (tests expect no auth)
+    //                 .requestMatchers("/api/**").permitAll()
 
-//                 // Everything else allowed
-//                 .anyRequest().permitAll()
-//             )
+    //                 // Everything else allowed
+    //                 .anyRequest().permitAll()
+    //             )
 
-//             // 🔑 JWT FILTER (must exist for tests)
-//             .addFilterBefore(
-//                     jwtAuthenticationFilter,
-//                     UsernamePasswordAuthenticationFilter.class
-//             );
+    //             // 🔑 JWT FILTER (must exist for tests)
+    //             .addFilterBefore(
+    //                     jwtAuthenticationFilter,
+    //                     UsernamePasswordAuthenticationFilter.class
+    //             );
 
-//         return http.build();
-//     }
+    //         return http.build();
+    //     }
 
-//     // 🔐 PASSWORD ENCODER
-//     @Bean
-//     public PasswordEncoder passwordEncoder() {
-//         return new BCryptPasswordEncoder();
-//      }
+    //     // 🔐 PASSWORD ENCODER
+    //     @Bean
+    //     public PasswordEncoder passwordEncoder() {
+    //         return new BCryptPasswordEncoder();
+    //      }
 
-//     // 🔑 AUTH MANAGER (needed by Spring Security)
-//     @Bean
-//     public AuthenticationManager authenticationManager(
-//             AuthenticationConfiguration config
-//     ) throws Exception {
-//         return config.getAuthenticationManager();
-//     }
-// }
-
-
+    //     // 🔑 AUTH MANAGER (needed by Spring Security)
+    //     @Bean
+    //     public AuthenticationManager authenticationManager(
+    //             AuthenticationConfiguration config
+    //     ) throws Exception {
+    //         return config.getAuthenticationManager();
+    //     }
+    // }
 
 
-package com.example.demo.security;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-@Configuration
-public class SecurityConfig {
+    package com.example.demo.security;
 
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    private final CustomUserDetailsService customUserDetailsService;
+    import org.springframework.context.annotation.Bean;
+    import org.springframework.context.annotation.Configuration;
+    import org.springframework.http.HttpMethod;
+    import org.springframework.security.authentication.AuthenticationManager;
+    import org.springframework.security.authentication.ProviderManager;
+    import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+    import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+    import org.springframework.security.config.http.SessionCreationPolicy;
+    import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+    import org.springframework.security.crypto.password.PasswordEncoder;
+    import org.springframework.security.web.SecurityFilterChain;
+    import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-    public SecurityConfig(
-            JwtAuthenticationFilter jwtAuthenticationFilter,
-            CustomUserDetailsService customUserDetailsService
-    ) {
-        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-        this.customUserDetailsService = customUserDetailsService;
+    @Configuration
+    public class SecurityConfig {
+
+        private final JwtAuthenticationFilter jwtAuthenticationFilter;
+        private final CustomUserDetailsService customUserDetailsService;
+
+        public SecurityConfig(
+                JwtAuthenticationFilter jwtAuthenticationFilter,
+                CustomUserDetailsService customUserDetailsService
+        ) {
+            this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+            this.customUserDetailsService = customUserDetailsService;
+        }
+
+        @Bean
+        public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        
+
+            http
+                // Disable CSRF for REST APIs
+                .csrf(csrf -> csrf.disable())
+
+                // Stateless session (JWT)
+                .sessionManagement(session ->
+                    session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+
+                // Authorization rules
+                .authorizeHttpRequests(auth -> auth
+                    .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
+                    // Public endpoints
+                    .requestMatchers(
+                            "/auth/**",
+                            "/swagger-ui/**",
+                            "/swagger-ui.html",
+                            "/v3/api-docs/**",
+                            "/hello-servlet",
+                            "/actuator/**"
+                    ).permitAll()
+
+                    // APIs allowed without auth (tests expect this)
+                    .requestMatchers("/api/**").permitAll()
+
+                    .anyRequest().permitAll()
+                )
+
+                // JWT filter (tests expect this bean)
+                .addFilterBefore(
+                        jwtAuthenticationFilter,
+                        UsernamePasswordAuthenticationFilter.class
+                );
+
+            return http.build();
+        }
+
+        // 🔑 THIS IS THE CRITICAL FIX (DO NOT REMOVE)
+        @Bean
+        public AuthenticationManager authenticationManager() {
+            DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+            provider.setUserDetailsService(customUserDetailsService);
+            provider.setPasswordEncoder(passwordEncoder());
+            return new ProviderManager(provider);
+        }
+
+        // Password encoder
+        @Bean
+        public PasswordEncoder passwordEncoder() {
+            return new BCryptPasswordEncoder();
+        }
     }
-
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-
-        http
-            // Disable CSRF for REST APIs
-            .csrf(csrf -> csrf.disable())
-
-            // Stateless session (JWT)
-            .sessionManagement(session ->
-                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            )
-
-            // Authorization rules
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-
-                // Public endpoints
-                .requestMatchers(
-                        "/auth/**",
-                        "/swagger-ui/**",
-                        "/swagger-ui.html",
-                        "/v3/api-docs/**",
-                        "/hello-servlet",
-                        "/actuator/**"
-                ).permitAll()
-
-                // APIs allowed without auth (tests expect this)
-                .requestMatchers("/api/**").permitAll()
-
-                .anyRequest().permitAll()
-            )
-
-            // JWT filter (tests expect this bean)
-            .addFilterBefore(
-                    jwtAuthenticationFilter,
-                    UsernamePasswordAuthenticationFilter.class
-            );
-
-        return http.build();
-    }
-
-    // 🔑 THIS IS THE CRITICAL FIX (DO NOT REMOVE)
-    @Bean
-    public AuthenticationManager authenticationManager() {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(customUserDetailsService);
-        provider.setPasswordEncoder(passwordEncoder());
-        return new ProviderManager(provider);
-    }
-
-    // Password encoder
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-}
