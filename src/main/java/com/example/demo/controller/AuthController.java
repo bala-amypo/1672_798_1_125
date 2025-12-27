@@ -19,47 +19,48 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
-    private final JwtTokenProvider jwtTokenProvider;
-    private final UserService userService;
+        private final JwtTokenProvider jwtTokenProvider;
+            private final UserService userService;
 
-    // 🔥 REQUIRED constructor for tests
-    public AuthController(
-            AuthenticationManager authenticationManager,
-            JwtTokenProvider jwtTokenProvider,
-            UserService userService
-    ) {
-        this.authenticationManager = authenticationManager;
-        this.jwtTokenProvider = jwtTokenProvider;
-        this.userService = userService;
-    }
+                // 🔥 REQUIRED constructor for tests
+                    public AuthController(
+                                AuthenticationManager authenticationManager,
+                                            JwtTokenProvider jwtTokenProvider,
+                                                        UserService userService
+                                                            ) {
+                                                                    this.authenticationManager = authenticationManager;
+                                                                            this.jwtTokenProvider = jwtTokenProvider;
+                                                                                    this.userService = userService;
+                                                                                        }
 
-    // ===================== REGISTER =====================
-    @PostMapping("/register")
-    public ResponseEntity<User> register(@RequestBody RegisterRequest req) {
-        User user = userService.registerAndReturnUser(req);
-        return ResponseEntity.status(HttpStatus.CREATED).body(user);
-    }
+                                                                                            // ===================== REGISTER =====================
+                                                                                                @PostMapping("/register")
+                                                                                                    public ResponseEntity<User> register(@RequestBody RegisterRequest req) {
+                                                                                                            User user = userService.registerAndReturnUser(req);
+                                                                                                                    return ResponseEntity.status(HttpStatus.CREATED).body(user);
+                                                                                                                        }
 
-    // ===================== LOGIN =====================
-    @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest req) {
+                                                                                                                            // ===================== LOGIN =====================
+                                                                                                                                @PostMapping("/login")
+                                                                                                                                    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest req) {
 
-        // 🔥 REQUIRED BY TESTS
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        req.getEmail(),
-                        req.getPassword()
-                )
-        );
+                                                                                                                                            // 🔥 REQUIRED BY TESTS
+                                                                                                                                                    Authentication authentication = authenticationManager.authenticate(
+                                                                                                                                                                    new UsernamePasswordAuthenticationToken(
+                                                                                                                                                                                            req.getEmail(),
+                                                                                                                                                                                                                    req.getPassword()
+                                                                                                                                                                                                                                    )
+                                                                                                                                                                                                                                            );
 
-        // 🔥 Load user
-        User user = userService.findByEmailIgnoreCase(req.getEmail());
+                                                                                                                                                                                                                                                    // 🔥 Load user
+                                                                                                                                                                                                                                                            User user = userService.findByEmailIgnoreCase(req.getEmail());
 
-        // 🔥 Generate token via provider (tests mock this)
-        String token = jwtTokenProvider.generateToken(authentication, user);
+                                                                                                                                                                                                                                                                    // 🔥 Generate token via provider (tests mock this)
+                                                                                                                                                                                                                                                                            String token = jwtTokenProvider.generateToken(authentication, user);
 
-        return ResponseEntity.ok(new AuthResponse(token));
-    }
-}
+                                                                                                                                                                                                                                                                                    return ResponseEntity.ok(new AuthResponse(token));
+                                                                                                                                                                                                                                                                                        }
+                                                                                                                                                                                                                                                                                        }
 
 
+                                                                                                                                                                                                                                                                                        
