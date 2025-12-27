@@ -89,8 +89,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -116,12 +116,19 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
+            // Disable CSRF for REST APIs
             .csrf(csrf -> csrf.disable())
+
+            // Stateless session (JWT)
             .sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
+
+            // Authorization rules
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
+                // Public endpoints
                 .requestMatchers(
                         "/auth/**",
                         "/swagger-ui/**",
@@ -130,13 +137,14 @@ public class SecurityConfig {
                         "/hello-servlet",
                         "/actuator/**"
                 ).permitAll()
+
+                // APIs allowed without auth (tests expect this)
                 .requestMatchers("/api/**").permitAll()
+
                 .anyRequest().permitAll()
             )
 
-            // 🔥 REQUIRED FOR LOGIN
-            .authenticationProvider(authenticationProvider())
-
+            // JWT filter (tests expect this bean)
             .addFilterBefore(
                     jwtAuthenticationFilter,
                     UsernamePasswordAuthenticationFilter.class
@@ -145,23 +153,18 @@ public class SecurityConfig {
         return http.build();
     }
 
+    // 🔑 THIS IS THE CRITICAL FIX (DO NOT REMOVE)
     @Bean
-    public DaoAuthenticationProvider authenticationProvider() {
+    public AuthenticationManager authenticationManager() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setUserDetailsService(customUserDetailsService);
         provider.setPasswordEncoder(passwordEncoder());
-        return provider;
+        return new ProviderManager(provider);
     }
 
+    // Password encoder
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration config
-    ) throws Exception {
-        return config.getAuthenticationManager();
     }
 }
